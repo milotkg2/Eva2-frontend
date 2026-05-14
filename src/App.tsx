@@ -16,10 +16,11 @@ export default function App() {
   const [rowsErr, setRowsErr] = useState<string | null>(null);
   const [usandoDemo, setUsandoDemo] = useState(false);
 
-  const modo = useMemo(() => (apiBase ? "api" : "demo"), []);
+  const modo = apiBase ? "api" : "demo";
 
   const stats = useMemo(() => {
     const categorias = new Set(rows.map((r) => r.categoria)).size;
+
     return {
       total: rows.length,
       categorias,
@@ -41,10 +42,12 @@ export default function App() {
             status: "local",
             mensaje: "Sin VITE_API_BASE_URL en el build",
           });
+
           setRows(DEMO_INDICADORES);
           setUsandoDemo(true);
           setLoading(false);
         }
+
         return;
       }
 
@@ -52,8 +55,13 @@ export default function App() {
 
       try {
         const hr = await fetch(`${base}/api/health`);
-        if (!hr.ok) throw new Error(`health HTTP ${hr.status}`);
+
+        if (!hr.ok) {
+          throw new Error(`health HTTP ${hr.status}`);
+        }
+
         const hj = (await hr.json()) as Record<string, unknown>;
+
         if (!cancelled) {
           setHealth(hj);
           setHealthErr(null);
@@ -67,8 +75,13 @@ export default function App() {
 
       try {
         const ir = await fetch(`${base}/api/indicadores`);
-        if (!ir.ok) throw new Error(`indicadores HTTP ${ir.status}`);
+
+        if (!ir.ok) {
+          throw new Error(`indicadores HTTP ${ir.status}`);
+        }
+
         const ij = (await ir.json()) as Indicador[];
+
         if (!cancelled) {
           setRows(ij);
           setUsandoDemo(false);
@@ -82,22 +95,25 @@ export default function App() {
         }
       }
 
-      if (!cancelled) setLoading(false);
+      if (!cancelled) {
+        setLoading(false);
+      }
     }
 
     void load();
+
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [apiBase]);
 
-  const dbOk =
-    health && typeof health.db === "string" && health.db === "up";
+  const dbOk = health?.db === "up";
 
   return (
     <div className="app-wrapper">
       <header className="app-header">
         <h1>📊 Lumina Retail — monitoreo</h1>
+
         <p className="subtitle">
           <strong>Innovatech Chile</strong>, etapa 2: aplicación de marca
           desplegada sobre la infraestructura de la evaluación parcial 1, con
@@ -105,6 +121,7 @@ export default function App() {
           <strong>React + Vite + Nginx</strong> (patrón del curso en{" "}
           <code>ejemplos y guias</code>).
         </p>
+
         <p className="meta-line">
           Marca de ejemplo: Lumina Retail · KPI operativos y de despliegue
         </p>
@@ -113,11 +130,17 @@ export default function App() {
       {healthErr && (
         <div className="alert alert-error">⚠️ {healthErr}</div>
       )}
+
       {modo === "demo" && (
+        <div className="alert alert-warning">
+          Ejecutando en modo demo local.
+        </div>
       )}
+
       {rowsErr && modo === "api" && (
         <div className="alert alert-warning">⚠️ {rowsErr}</div>
       )}
+
       {dbOk && modo === "api" && !usandoDemo && (
         <div className="alert alert-success">
           Base de datos conectada (health: <code>db: up</code>).
@@ -129,14 +152,20 @@ export default function App() {
           <div className="stat-num">{loading ? "…" : stats.total}</div>
           <div className="stat-label">Indicadores</div>
         </div>
+
         <div className="stat-card">
-          <div className="stat-num">{loading ? "…" : stats.categorias}</div>
+          <div className="stat-num">
+            {loading ? "…" : stats.categorias}
+          </div>
+
           <div className="stat-label">Áreas / categorías</div>
         </div>
+
         <div className="stat-card">
           <div className="stat-num">
             {loading ? "…" : `${stats.avanceProm}%`}
           </div>
+
           <div className="stat-label">Avance promedio</div>
         </div>
       </div>
@@ -146,6 +175,7 @@ export default function App() {
       <div className="card">
         <div className="card-title">
           📋 Tabla de indicadores
+
           {loading && (
             <span
               style={{
@@ -173,7 +203,9 @@ export default function App() {
         <code>
           {(apiBase || "http://localhost:8080") + "/api/indicadores"}
         </code>
+
         {" · "}
+
         Health:{" "}
         <code>
           {(apiBase || "http://localhost:8080") + "/api/health"}
