@@ -114,11 +114,6 @@ export default function App() {
         <div className="alert alert-error">⚠️ {healthErr}</div>
       )}
       {modo === "demo" && (
-        <div className="alert alert-warning">
-          Modo demo: define <code>VITE_API_BASE_URL</code> al construir la
-          imagen Docker para consumir datos reales desde MySQL (como en la
-          guía <code>alumnos-web</code> con <code>VITE_API_URL</code>).
-        </div>
       )}
       {rowsErr && modo === "api" && (
         <div className="alert alert-warning">⚠️ {rowsErr}</div>
