@@ -115,7 +115,7 @@ export default function App() {
       )}
       {modo === "demo" && (
         <div className="alert alert-warning">
-          . <code>VITE_API_BASE_URL</code> .  <code>.</code> con <code>VITE_API_URL</code>).
+          .Base de datos conectada <code>VITE_API_BASE_URL</code> .  <code>.</code> con <code>VITE_API_URL</code>).
         </div>
       )}
       {rowsErr && modo === "api" && (
